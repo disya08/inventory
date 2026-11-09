@@ -1,0 +1,35 @@
+---
+- name: Настройка сервера и установка базовых пакетов
+  hosts: all
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Выполняем ping для проверки SSH-туннеля
+      ansible.builtin.ping:
+
+    - name: Обновление кэша и установка пакетов (Debian/Ubuntu)
+      ansible.builtin.apt:
+        name:
+          - curl
+          - git
+          - zip
+          - unzip
+          - nodejs
+          - npm
+        state: present
+        update_cache: true
+      when: ansible_os_family == "Debian"
+
+    - name: Обновление кэша и установка пакетов (RedHat/CentOS)
+      ansible.builtin.dnf:
+        name:
+          - curl
+          - git
+          - zip
+          - unzip
+          - nodejs
+          - npm
+        state: present
+        update_cache: true
+      when: ansible_os_family == "RedHat"
